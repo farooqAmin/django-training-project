@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     mail_address = models.CharField("address", max_length=128)
 
     city = models.CharField(max_length=64, default="Lahore")
@@ -31,7 +31,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     type = models.CharField(
         max_length=20, choices=USER_TYPES, default=CUSTOMER)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(
+        Address, on_delete=models.CASCADE, related_name='user_profile')
     phoneNumberRegex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
     phone_number = models.CharField(
         validators=[phoneNumberRegex], max_length=16, unique=True)
