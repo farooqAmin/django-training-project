@@ -1,0 +1,17 @@
+<h1>Register User</h1>
+
+<form method="POST" action="">
+  {% csrf_token %} {% for field in form %} 
+    <div style={margin: '10px'}>
+        {{field.label}} {{field}} 
+    </div>
+    <br />
+  {% endfor%} {% comment %} {{ form.username.label }} {{ form.username }}
+  {{form.email.label }} {{ form.email }} {{form.password1.label}}
+  {{form.password1 }} {{ form.password2.label }} {{form.password2 }}
+  {%endcomment %}
+
+  <input type="submit" name="Create User" />
+
+  {{ form.errors }}
+</form>
