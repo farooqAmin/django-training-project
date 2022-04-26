@@ -1,9 +1,11 @@
+import pdb
+from unicodedata import combining
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .forms import CreateUserForm
+from .forms import AddressForm, CreateUserForm, CreateUserProfileForm
 
 # Create your views here.
 
@@ -14,19 +16,37 @@ def registerPage(request):
         return redirect('home')
     else:
         form = CreateUserForm()
+        profile_form = CreateUserProfileForm()
+        address_form = AddressForm()
 
         if request.method == "POST":
             form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request, 'Account created for ' + user)
+            profile_form = CreateUserProfileForm(request.POST)
+            address_form = AddressForm(request.POST)
+
+            if form.is_valid() and profile_form.is_valid() and address_form.is_valid():
+                pdb.set_trace()
+                user = form.save(commit=False)
+                user.save()
+
+                address = address_form.save(commit=False)
+                address.save()
+
+                profile = profile_form.save(commit=False)
+                profile.user = user
+                profile.address = address
+                profile.save()
+
+                messages.success(
+                    request, 'Account created for ' + user.username)
                 # messages.add_message(request, messages.INFO,
                 #                      'Account created successfully')
                 return redirect('login')
 
         context = {
             'form': form,
+            'profile_form': profile_form,
+            'address_form': address_form
         }
         return render(request, 'accounts/register.html', context)
 
