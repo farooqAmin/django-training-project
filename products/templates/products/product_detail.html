@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'products/css/styles.css' %}"
+/>
+{% endblock %} {% block content %}
+<section class="product-detail-container">
+  <h3>Product detail</h3>
+
+  <div class="product-detail">
+    <p>{{product.name}}</p>
+    <p>Rs. {{product.price}}</p>
+    <p>Remaining Quantity: {{product.quantity}}</p>
+    <input
+      type="button"
+      onclick="location.href='{% url 'add-to-cart' product.slug %}';"
+      value="Add to cart"
+    />
+  </div>
+</section>
+{% endblock %}

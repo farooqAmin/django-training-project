@@ -1,6 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="login-container">
 <h1>Register User</h1>
 
-<form method="POST" action="">
+<form method="POST" action="" class="login-form">
   {% csrf_token %} 
   <h3>User Info:</h3>
   {% for field in form %} 
@@ -30,3 +35,5 @@
   {{ profile_form.errors }}
   {{ address_form.errors }}
 </form>
+</div>
+{% endblock  %}

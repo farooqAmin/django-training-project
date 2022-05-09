@@ -1,21 +1,28 @@
-<h1>Login Page</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-{% for message in messages %}
-<p>{{message}}</p>
-{% endfor %}
+{% block content %}
+<div class="login-container">
+  <h1>Login</h1>
 
-<form method="POST" action="">
-  {% csrf_token %}
-  <div style={margin: '10px'}>
-    <label>Username</label>
-    <input type="text" name="username" />
-  </div>
-  </br>
-  <div style={margin: '10px'}>
-    <label>Password</label>
-    <input type="password" name="password" />
-  </div>
-  </br>
+  {% for message in messages %}
+  <p>{{message}}</p>
+  {% endfor %}
 
-  <input type="submit" name="Login User" />
-</form>
+  <form method="POST" action="" class="login-form">
+    {% csrf_token %}
+    <div style={margin: '10px'}>
+      <label>Username</label>
+      <input type="text" name="username" />
+    </div>
+    </br>
+    <div style={margin: '10px'}>
+      <label>Password</label>
+      <input type="password" name="password" />
+    </div>
+    </br>
+
+    <input type="submit" name="Login User" />
+  </form>
+</div>
+{% endblock  %}

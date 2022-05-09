@@ -1,5 +1,21 @@
-<h1>Home/Dashboard Page</h1>
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'accounts/css/styles.css' %}"
+/>
+{% endblock %} {% block content %}
+<div class="container">
+  <h1>Home/Dashboard Page</h1>
 
-{% for message in messages %}
-<p>{{message}}</p>
-{% endfor %}
+  {% for message in messages %}
+  <p>{{message}}</p>
+  {% endfor %} {% for product in products %}
+  <div class="product">
+    <a href="{% url 'product-detail' product.slug %}">{{product.name}}</a>
+    <p>Rs. {{product.price}}</p>
+  </div>
+
+  {% endfor %}
+</div>
+{% endblock %}

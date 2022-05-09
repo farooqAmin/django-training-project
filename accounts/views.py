@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .forms import AddressForm, CreateUserForm, CreateUserProfileForm
+from products.models import Product
 
 # Create your views here.
 
@@ -80,5 +81,7 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def home(request):
-    context = {}
+    products = Product.objects.all()
+
+    context = {'products': products}
     return render(request, 'accounts/home.html', context)

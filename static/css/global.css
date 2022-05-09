@@ -1,0 +1,20 @@
+body{
+    margin: 0;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    background-color: lightgray;
+}
+.login-container {
+    max-width: 650px;
+    margin: 50px auto;
+    text-align: center;
+}
+.login-form {
+    border: 2px solid grey;
+    border-radius: 5px;
+    padding: 20px 0;
+}
