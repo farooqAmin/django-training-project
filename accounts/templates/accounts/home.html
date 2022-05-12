@@ -8,12 +8,26 @@
 <div class="container">
   <h1>Home/Dashboard Page</h1>
 
-  {% for message in messages %}
+  {% if request.user.userprofile.type == 'vendor' %}
+  <div class="button-container">
+    <input
+      class="button"
+      type="button"
+      onclick="location.href='{% url 'add-product' %}'"
+      value="Add Product"
+    />
+  </div>
+  {% endif %} {% for message in messages %}
   <p>{{message}}</p>
   {% endfor %} {% for product in products %}
-  <div class="product">
+  <div
+    class="product {% if product.quantity < 10 and request.user.userprofile.type == 'vendor' %}product-alert{% endif %}"
+  >
     <a href="{% url 'product-detail' product.slug %}">{{product.name}}</a>
     <p>Rs. {{product.price}}</p>
+    {% if request.user.userprofile.type == 'vendor' %}
+    <p>Remaining Quantity: {{ product.quantity }}</p>
+    {% endif %}
   </div>
 
   {% endfor %}

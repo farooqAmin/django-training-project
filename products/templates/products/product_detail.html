@@ -9,14 +9,32 @@
   <h3>Product detail</h3>
 
   <div class="product-detail">
-    <p>{{product.name}}</p>
+    <h4>{{product.name| title }}</h4>
     <p>Rs. {{product.price}}</p>
     <p>Remaining Quantity: {{product.quantity}}</p>
+    {% if request.user.userprofile.type == 'customer' %}
     <input
       type="button"
       onclick="location.href='{% url 'add-to-cart' product.slug %}';"
       value="Add to cart"
     />
+    {% else %}
+    <div style="display: flex">
+      <input
+        type="button"
+        onclick="location.href='{% url 'product-update' product.slug %}';"
+        value="Update Product"
+      />
+      <form
+        method="post"
+        action="{% url 'product-delete' product.slug %}"
+        style="margin-left: 20px"
+      >
+        {% csrf_token %}
+        <input type="submit" value="Delete Product" />
+      </form>
+    </div>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

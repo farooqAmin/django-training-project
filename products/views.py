@@ -1,7 +1,12 @@
 import pdb
 from django import views
+from django.utils.text import slugify
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
+
+from accounts.models import UserProfile
+from .forms import ProductForm
 from orders.models import Order
 from .models import OrderProduct, Product
 
@@ -14,10 +19,61 @@ def productList(request):
     return render(request, 'products/products.html', context)
 
 
+class ProductView(views.View):
+    def get_object(self, slug):
+        return Product.objects.get(slug=slug, vendor=self.request.user.userprofile)
+
+    def get(self, request, *args, **kwargs):
+        if kwargs.get('slug'):
+            product = self.get_object(kwargs['slug'])
+            form = ProductForm(request.POST or None, instance=product)
+        else:
+            form = ProductForm()
+        context = {
+            'form': form
+        }
+
+        return render(request, 'products/product_form.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = ProductForm(request.POST)
+
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.vendor = request.user.userprofile
+            product.slug = slugify(form.cleaned_data['name'])
+            product.save()
+
+        return redirect("home")
+
+    def put(self, request, *args, **kwargs):
+
+        product = self.get_object(kwargs['slug'])
+        form = ProductForm(request.PUT or None, instance=product)
+
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.vendor = request.user.userprofile
+            product.slug = slugify(form.cleaned_data['name'])
+            product.save()
+
+        return redirect("home")
+
+    def delete(self, request, *args, **kwargs):
+
+        product = self.get_object(kwargs['slug'])
+        product.delete()
+
+        return redirect("home")
+
+
 class ProductDetail(views.View):
 
     def get_object(self, slug):
-        return Product.objects.get(slug=slug)
+        if self.request.user.userprofile.type == UserProfile.CUSTOMER:
+            return Product.objects.get(slug=slug)
+        else:
+            return Product.objects.get(slug=slug, vendor=self.request.user.userprofile)
 
     def get(self, request, *args, **kwargs):
         product_slug = kwargs['slug']
@@ -32,7 +88,6 @@ class ProductDetail(views.View):
 
 @login_required(login_url='login')
 def add_to_cart(request, slug):
-    pdb.set_trace()
     product = get_object_or_404(Product, slug=slug)
 
     order_item, created = OrderProduct.objects.get_or_create(

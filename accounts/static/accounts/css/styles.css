@@ -10,3 +10,16 @@
     margin: 10px 0;
     padding: 10px;
 }
+.product-alert {
+    border-color: red;
+}
+.button-container {
+    text-align: end;
+    margin-right: 40px;
+}
+.button {
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}

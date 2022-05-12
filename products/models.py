@@ -1,5 +1,6 @@
 from unicodedata import category
 from django.db import models
+from django.utils import timezone
 
 from accounts.models import UserProfile
 
@@ -36,9 +37,15 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     vendor = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=255, null=True, blank=True)
+    create = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ['name', 'vendor', 'sub_category']
+        ordering = ['-modified']
 
 
 class OrderProduct(models.Model):

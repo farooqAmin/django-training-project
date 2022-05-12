@@ -1,8 +1,9 @@
 {% load static %}
 
 <nav class="navbar">
-  <h3>BuyNow</h3>
+  <h3><a href="{% url 'home' %}" style="text-decoration: none">BuyNow</a></h3>
   {% if request.user.is_authenticated %}
+  <p>{{ request.user.username }} {{ request.user.userprofile.type }}</p>
   <a href="{% url 'logout' %}">Logout</a>
   {% endif %}
 </nav>

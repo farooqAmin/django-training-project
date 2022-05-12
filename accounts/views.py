@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+from .models import UserProfile
+
 from .forms import AddressForm, CreateUserForm, CreateUserProfileForm
 from products.models import Product
 
@@ -26,7 +28,6 @@ def registerPage(request):
             address_form = AddressForm(request.POST)
 
             if form.is_valid() and profile_form.is_valid() and address_form.is_valid():
-                pdb.set_trace()
                 user = form.save(commit=False)
                 user.save()
 
@@ -81,7 +82,10 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def home(request):
-    products = Product.objects.all()
+    if request.user.userprofile.type == UserProfile.VENDOR:
+        products = Product.objects.filter(vendor=request.user.userprofile)
+    else:
+        products = Product.objects.all()
 
     context = {'products': products}
     return render(request, 'accounts/home.html', context)

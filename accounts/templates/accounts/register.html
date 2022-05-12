@@ -11,6 +11,9 @@
   {% for field in form %} 
     <div style={margin: '10px'}>
         {{field.label}} {{field}} 
+        {% for error in field.errors %}
+          <li class="error">{{ error|escape }}</li>
+        {% endfor %}
     </div>
     <br />
   {% endfor%}
@@ -29,11 +32,12 @@
     <br />
   {% endfor%}
 
-  <input type="submit" name="Create User" />
+  <input type="submit" value="Register" name="Create User" />
 
-  {{ form.errors }}
+  {% comment %} {{ form.errors }}
   {{ profile_form.errors }}
-  {{ address_form.errors }}
+  {{ address_form.errors }} {% endcomment %}
 </form>
+<p>Already have an account? <a href="{% url 'login' %}">Login</a> </p>
 </div>
 {% endblock  %}

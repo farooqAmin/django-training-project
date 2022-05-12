@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'products/css/styles.css' %}"
+/>
+{% endblock %} {% block content %}
+<section class="product-add-container">
+  <h3>Product Add</h3>
+  <form method="post" action="" class="product-add-form">
+    {% csrf_token %} {{ form.as_p }}
+    <input type="submit" value="Save" />
+  </form>
+</section>
+
+{% endblock %}

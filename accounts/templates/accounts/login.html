@@ -6,7 +6,7 @@
   <h1>Login</h1>
 
   {% for message in messages %}
-  <p>{{message}}</p>
+  <p class="error">{{message}}</p>
   {% endfor %}
 
   <form method="POST" action="" class="login-form">
@@ -22,7 +22,8 @@
     </div>
     </br>
 
-    <input type="submit" name="Login User" />
+    <input type="submit" value="Login" name="Login User" />
   </form>
+<p>Don't have an account? <a href="{% url 'register' %}">Register</a> </p>
 </div>
 {% endblock  %}
