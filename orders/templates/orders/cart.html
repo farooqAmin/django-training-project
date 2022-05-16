@@ -1,0 +1,75 @@
+{% extends 'base.html' %} {% load static %} {% block style %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'orders/css/styles.css' %}"
+/>
+{% endblock %}
+{% comment %} {% block script %}
+<script src="{% static 'orders/js/index.js' %}"></script>
+{% endblock  %} {% endcomment %}
+{% block content %}
+<section class="cart-container">
+  <h3 class="cart-title">
+    My Cart <span style="font-size: 16px">({{ cart_items_count }} item)</span>
+  </h3>
+  <div class="cart-title flex-space-between">
+    <h4>Sub Total</h4>
+    <h4>Rs. {{sub_total}}</h4>
+  </div>
+  <div class="cart-title flex-space-between">
+    <h4>Delivery Charges</h4>
+    <h4>Rs. 0</h4>
+  </div>
+  <div class="cart-title flex-space-between">
+    <h4>Total Bill</h4>
+    <h4>Rs. {{sub_total}}</h4>
+  </div>
+  {% for item in cart_items %}
+  <div class="product-detail">
+    <h4>{{ item.product.name| title }}</h4>
+    <p>Rs. {{ item.product.price}} * {{ item.quantity }}</p>
+
+    <div class="counter-section">
+        <p>Rs. {{ item.get_item_subtotal }}</p>
+        <div class="counter-container">
+            <form  method="post" action="{% url 'cart-product' item.product.slug %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="increment" />
+                <button class="increment-button">+</button>
+            </form>
+            <h5 id="counting">{{item.quantity}}</h5>
+            <form method="post" action="{% url 'cart-product' item.product.slug %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="decrement" />
+                <button class="decrement-button">-</button> 
+            </form>        
+        </div>
+    </div>
+
+        <input
+        type="button"
+        onclick="location.href='{% url 'remove-from-cart' item.product.slug %}';"
+        value="Remove from cart"
+        />
+    {% comment %}
+    <form
+      method="post"
+      action="{% url 'product-delete' product.slug %}"
+      style="margin-left: 20px"
+    >
+      {% csrf_token %}
+      <input type="submit" value="Delete Product" />
+    </form>
+    {% endcomment %}
+  </div>
+  {% endfor %}
+  <button
+    onclick="console.log('proceed')"
+    class="checkout-button flex-space-between"
+  >
+    <h4>Proceed to Checkout</h4>
+    <h4>Rs. {{sub_total}}</h4>
+  </button>
+</section>
+{% endblock %}

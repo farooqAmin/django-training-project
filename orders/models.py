@@ -1,3 +1,4 @@
+import pdb
 from django.db import models
 
 from accounts.models import UserProfile
@@ -35,3 +36,15 @@ class Order(models.Model):
 
     def __str__(self):
         return self.customer.user.username + "order"
+
+    def get_cart_items(self):
+        if not self.ordered:
+            return self.products.all().count()
+        else:
+            return 0
+
+    def get_subtotal(self):
+        sub_total = 0
+        for order_product in self.products.all():
+            sub_total += order_product.get_item_subtotal()
+        return sub_total

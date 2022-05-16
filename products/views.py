@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from accounts.models import UserProfile
 from .forms import ProductForm
@@ -23,6 +24,7 @@ class ProductView(views.View):
     def get_object(self, slug):
         return Product.objects.get(slug=slug, vendor=self.request.user.userprofile)
 
+    @method_decorator(login_required(login_url='login'))
     def get(self, request, *args, **kwargs):
         if kwargs.get('slug'):
             product = self.get_object(kwargs['slug'])
@@ -35,6 +37,7 @@ class ProductView(views.View):
 
         return render(request, 'products/product_form.html', context)
 
+    @method_decorator(login_required(login_url='login'))
     def post(self, request, *args, **kwargs):
         form = ProductForm(request.POST)
 
@@ -46,6 +49,7 @@ class ProductView(views.View):
 
         return redirect("home")
 
+    @method_decorator(login_required(login_url='login'))
     def put(self, request, *args, **kwargs):
 
         product = self.get_object(kwargs['slug'])
@@ -59,6 +63,7 @@ class ProductView(views.View):
 
         return redirect("home")
 
+    @method_decorator(login_required(login_url='login'))
     def delete(self, request, *args, **kwargs):
 
         product = self.get_object(kwargs['slug'])
@@ -75,6 +80,7 @@ class ProductDetail(views.View):
         else:
             return Product.objects.get(slug=slug, vendor=self.request.user.userprofile)
 
+    @method_decorator(login_required(login_url='login'))
     def get(self, request, *args, **kwargs):
         product_slug = kwargs['slug']
         product = self.get_object(product_slug)
@@ -102,11 +108,17 @@ def add_to_cart(request, slug):
         if order.products.filter(product__slug=product.slug).exists():
             order_item.quantity += 1
             order_item.save()
+            product.quantity -= 1
+            product.save()
         else:
             order.products.add(order_item)
+            product.quantity -= 1
+            product.save()
     else:
         order = Order.objects.create(customer=request.user.userprofile)
         order.products.add(order_item)
+        product.quantity -= 1
+        product.save()
 
     return redirect("product-detail", slug=slug)
 
@@ -124,9 +136,12 @@ def remove_from_cart(request, slug):
             order_item = OrderProduct.objects.filter(
                 product=product, ordered=False, customer=request.user.userprofile)[0]
             order.products.remove(order_item)
+            product.quantity += order_item.quantity
+            product.save()
+            order_item.delete()
         else:
-            redirect("product-detail", slug=slug)
+            redirect("cart")
     else:
-        return redirect("product-detail", slug=slug)
+        return redirect("cart")
 
-    return redirect("product-detail", slug=slug)
+    return redirect("cart")

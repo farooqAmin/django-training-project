@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'products.middleware.HttpPostTunnelingMiddleware',
+    'orders.middleware.HttpPostTunnelingMiddleware',
 
 ]
 
