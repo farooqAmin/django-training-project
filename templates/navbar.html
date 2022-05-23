@@ -12,11 +12,16 @@
       {% if request.user.userprofile.type == "customer" %}
       <a href="{% url 'cart' %}" style="text-decoration: none"
       >CART
-      <sup class="superscript"
-      >{{ request.user.userprofile.order_set.last.get_cart_items }}</sup
-      >
+      <sup class="superscript">
+        {% if request.user.userprofile.order_set.last.get_cart_items %}
+            {{ request.user.userprofile.order_set.last.get_cart_items }}
+        {% else %}
+        0
+        {% endif %}
+
+        </sup>
     </a>
-    <a href="" style="text-decoration: none; margin-left: 30px">Orders</a>
+    <a href="{% url 'orders' %}" style="text-decoration: none; margin-left: 30px">Orders</a>
     {% endif %}
     <a href="{% url 'logout' %}" style="margin-left: 30px">Logout</a>
   </div>

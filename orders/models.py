@@ -14,9 +14,9 @@ class Cart(models.Model):
 
 class Order(models.Model):
 
-    IN_PROGRESS = 'in_progress'
-    SHIPPING = 'shipping'
-    DELIVERED = 'delivered'
+    IN_PROGRESS = 'In progress'
+    SHIPPING = 'Shipping'
+    DELIVERED = 'Delivered'
 
     STATUS_CHOICES = [
         (IN_PROGRESS, 'In Progress'),

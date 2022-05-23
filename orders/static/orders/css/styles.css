@@ -43,3 +43,17 @@ h4 {
     display: flex;
     justify-content: space-between;
 }
+.orders-container {
+    margin: auto;
+    max-width: 750px;
+}
+table {
+    border: 1px solid lightgray;
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid lightgray;
+    padding: 15px;
+    text-align: center;
+}
