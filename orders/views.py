@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from django import views
+
+from products.models import Product
 from .models import Order
 
 from products.models import OrderProduct
@@ -46,22 +48,29 @@ class CartProduct(views.View):
     @method_decorator(login_required(login_url='login'))
     def put(self, request, *args, **kwargs):
 
-        product = self.get_object(kwargs['slug'])
+        order_product = self.get_object(kwargs['slug'])
+        product = Product.objects.get(slug=kwargs['slug'])
         action = request.PUT.get('action')
 
         if action == 'increment':
-            product.quantity += 1
+            order_product.quantity += 1
+            order_product.save()
+            product.quantity -= 1
             product.save()
         else:
-            if product.quantity == 1:
+            if order_product.quantity == 1:
                 order = Order.objects.filter(
                     customer=request.user.userprofile, ordered=False).last()
 
-                order.products.remove(product)
-                product.delete()
+                order.products.remove(order_product)
+                order_product.delete()
+                product.quantity += 1
+                product.save()
 
             else:
-                product.quantity -= 1
+                order_product.quantity -= 1
+                order_product.save()
+                product.quantity += 1
                 product.save()
 
         return redirect("cart")
